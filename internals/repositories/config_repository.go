@@ -2,6 +2,7 @@ package internals
 
 import (
 	"fintual-cli/internals/models"
+	"log"
 
 	"gopkg.in/ini.v1"
 )
@@ -28,6 +29,32 @@ func (c Config) GetConfig() (*models.ConfigINI, error) {
 	}
 
 	return &configFromConfig, nil
+}
+
+func (c Config) SetConfig(field string, value string) error {
+	config, err := ini.Load(c.filePath)
+
+	if err != nil {
+		return err
+	}
+
+	userSection := config.Section("user")
+
+	if field == "email" {
+		userSection.Key("email").SetValue(value)
+	}
+
+	if field == "password" {
+		userSection.Key("password").SetValue(value)
+	}
+
+	err = config.SaveTo("config.ini")
+
+	if err != nil {
+		log.Fatalf("Error saving the file %v", err)
+	}
+
+	return nil
 }
 
 var ConfigRepository = Config{filePath: filePath}
