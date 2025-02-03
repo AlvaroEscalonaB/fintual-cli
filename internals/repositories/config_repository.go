@@ -31,21 +31,16 @@ func (c Config) GetConfig() (*models.ConfigINI, error) {
 	return &configFromConfig, nil
 }
 
-func (c Config) SetConfig(field string, value string) error {
+func (c Config) SetConfig(field string, value string, section string) error {
 	config, err := ini.Load(c.filePath)
 
 	if err != nil {
 		return err
 	}
 
-	userSection := config.Section("user")
-
-	if field == "email" {
-		userSection.Key("email").SetValue(value)
-	}
-
-	if field == "password" {
-		userSection.Key("password").SetValue(value)
+	if section == "user" {
+		userSection := config.Section("user")
+		userSection.Key(field).SetValue(value)
 	}
 
 	err = config.SaveTo("config.ini")

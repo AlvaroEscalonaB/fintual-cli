@@ -23,14 +23,14 @@ var setCmd = &cobra.Command{
 		}
 
 		if email != "" {
-			err = internals.ConfigRepository.SetConfig("email", email)
+			err = internals.ConfigRepository.SetConfig("email", email, "user")
 			if err != nil {
 				log.Printf("Cannot set the email for %v\n", err)
 			}
 		}
 
 		if password != "" {
-			err = internals.ConfigRepository.SetConfig("password", password)
+			err = internals.ConfigRepository.SetConfig("password", password, "user")
 			if err != nil {
 				log.Printf("Cannot set the password for %v\n", err)
 			}
