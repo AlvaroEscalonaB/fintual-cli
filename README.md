@@ -5,7 +5,7 @@ This app is a convinient wrap around the fintual API:
 
 ### Development useful resources
 
-- [Log rocket request tutorial](https://blog.logrocket.com/making-http-requests-in-go/)
+- [Log rocket net/http tutorial](https://blog.logrocket.com/making-http-requests-in-go/)
 - [Tutorial for ini files](https://www.kelche.co/blog/go/ini/)
 
 
@@ -26,6 +26,8 @@ fintual-cli/
 │   ├─- repositories/
 │   │   ├─- config_repository.go
 │   │   └── fintual_repository.go
+│   ├─- utils/
+│   │   └── url_params.go
 ├── tests/
 ├── go.mod
 ├── go.sum
