@@ -9,8 +9,6 @@ type UserPayload struct {
 	User User `json:"user"`
 }
 
-// {"data":{"type":"access_token","attributes":{"token":"c4tnS4ot7R23BVT_8cAa"}}}
-
 type TokenResponse struct {
 	Data struct {
 		Type       string `json:"type"`
