@@ -14,7 +14,7 @@ type Config struct {
 }
 
 func (c Config) GetConfig() (*models.ConfigINI, error) {
-	iniData, err := ini.Load(c.filePath)
+	config, err := ini.Load(c.filePath)
 
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func (c Config) GetConfig() (*models.ConfigINI, error) {
 
 	var configFromConfig models.ConfigINI
 
-	err = iniData.MapTo(&configFromConfig)
+	err = config.MapTo(&configFromConfig)
 
 	if err != nil {
 		return nil, err
@@ -31,21 +31,16 @@ func (c Config) GetConfig() (*models.ConfigINI, error) {
 	return &configFromConfig, nil
 }
 
-func (c Config) SetConfig(field string, value string) error {
+func (c Config) SetConfig(field string, value string, section string) error {
 	config, err := ini.Load(c.filePath)
 
 	if err != nil {
 		return err
 	}
 
-	userSection := config.Section("user")
-
-	if field == "email" {
-		userSection.Key("email").SetValue(value)
-	}
-
-	if field == "password" {
-		userSection.Key("password").SetValue(value)
+	if section == "user" {
+		userSection := config.Section("user")
+		userSection.Key(field).SetValue(value)
 	}
 
 	err = config.SaveTo("config.ini")
@@ -55,6 +50,27 @@ func (c Config) SetConfig(field string, value string) error {
 	}
 
 	return nil
+}
+
+func (c Config) GetUserPayload() (map[string]string, error) {
+	config, err := ini.Load(c.filePath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var configFromConfig models.ConfigINI
+
+	err = config.MapTo(&configFromConfig)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]string{
+		"user_email": configFromConfig.User.Email,
+		"user_token": configFromConfig.User.Token,
+	}, nil
 }
 
 var ConfigRepository = Config{filePath: filePath}
