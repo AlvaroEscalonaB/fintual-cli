@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fintual-cli/internals/models"
+	"fintual-cli/internals/utils"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"sort"
 	"strconv"
@@ -101,6 +103,35 @@ func (fintualAPI FintualAPI) ObtainToken(email string, password string) (string,
 	}
 
 	return tokenResponse.Data.Attributes.Token, nil
+}
+
+func (fintualAPI FintualAPI) ObtainGoals(params map[string]string) ([]models.Goal, error) {
+	var goals models.GoalsResponse
+
+	baseGoalsURL := fmt.Sprintf("%s%s", BaseURL, Goals)
+	goalsURL, err := utils.UrlGenerator(baseGoalsURL, params)
+	if err != nil {
+		log.Fatalf("Error making the url %v", err)
+	}
+
+	resp, err := http.Get(goalsURL)
+
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(body, &goals)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return goals.Data, nil
 }
 
 var FintualAPIRepository = FintualAPI{BaseURL: BaseURL}
