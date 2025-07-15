@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
@@ -30,9 +31,26 @@ var goalsCmd = &cobra.Command{
 
 		fmt.Fprintf(writer, "%s\t%s\t%s\t%s\n", "Nombre", "Depositado", "Total", "Profit")
 
-		for _, goal := range goals {
-			fmt.Fprintf(writer, "%s\t%f\t%f\t%f\n", utils.CleanText(goal.Attributes.Name), goal.Attributes.Deposited, goal.Attributes.Nav, goal.Attributes.Profit)
+		totalDeposited := 0
+		totalProfit := 0
+		for _, value := range goals {
+			totalDeposited += int(value.Attributes.Deposited)
+			totalProfit += int(value.Attributes.Nav) 
 		}
+
+		for _, goal := range goals {
+			fmt.Fprintf(writer, "%s\t%s\t%s\t%s\n",
+				utils.CleanText(goal.Attributes.Name),
+				utils.FormatCurrency(strconv.Itoa(int(goal.Attributes.Deposited))),
+				utils.FormatCurrency(strconv.Itoa(int(goal.Attributes.Nav))),
+				utils.FormatCurrency(strconv.Itoa(int(goal.Attributes.Profit))),
+			)
+		}
+
+		totalDepositedStr := utils.FormatCurrency(strconv.Itoa(totalDeposited))
+		totalProfitStr := utils.FormatCurrency(strconv.Itoa(totalProfit))
+
+		fmt.Fprintf(writer, "%s\t%s\t%s\t%s\n", "Total neto", totalDepositedStr, totalProfitStr, totalProfitStr)
 
 		writer.Flush()
 	},
